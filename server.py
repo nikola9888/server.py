@@ -5,6 +5,13 @@ import os
 
 app = Flask(__name__)
 
+@app.route("/")
+def home():
+    return jsonify({
+        "status": "OK",
+        "message": "MyAi video server is running"
+    })
+    
 YDL_OPTS = {
     "format": "best[ext=mp4]/best",
     "quiet": True,
