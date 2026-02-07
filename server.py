@@ -22,6 +22,7 @@ YDL_OPTS = {
     "skip_download": True
 }
 
+
 @app.route("/video/stream")
 def stream_video():
     video_id = request.args.get("video_id")
@@ -41,6 +42,9 @@ def stream_video():
                     stream_url = f.get("url")
                     break
 
+            if not stream_url:
+                return jsonify({"error": "No suitable MP4 stream found"}), 404
+
             # TITLOVI
             captions = []
             subs = info.get("subtitles") or info.get("automatic_captions")
@@ -53,11 +57,8 @@ def stream_video():
                                 "language": lang,
                                 "url": t.get("url")
                             })
-                            break
-                    break  # samo jedan jezik za početak
 
             return jsonify({
-                "video_id": video_id,
                 "title": info.get("title"),
                 "stream_url": stream_url,
                 "captions": captions
@@ -65,8 +66,5 @@ def stream_video():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+        
     
